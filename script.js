@@ -1,5 +1,5 @@
 // Game configuration and state variables
-const GOAL_SCORE = 10000;        // Total items needed to collect
+const GOAL_SCORE = 5000;        // Total items needed to collect
 const winningMessages = [
   'Amazing work! You reached the goal.',
   'You won! Congratulations!',
@@ -31,31 +31,33 @@ function createGrid() {
 createGrid();
 
 // Spawns a new item in a random grid cell
-function spawnWaterCan() {
+function spawnItem() {
   if (!gameActive) return; // Stop if the game is not active
   const cells = document.querySelectorAll('.grid-cell');
-  const emptyCells = [...cells].filter(cell => !cell.querySelector('.water-can'));
+  const emptyCells = [...cells].filter(cell => !cell.querySelector('.water-can, .rock'));
 
   if (emptyCells.length === 0) return;
 
-  // Select a random empty cell from the grid to place the water can
+  // Select a random empty cell from the grid to place the item
   const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  const rockChance = time < 20 ? 0.4 : time < 50 ? 0.2 : 0;
+  const itemClass = Math.random() < rockChance ? 'rock' : 'water-can';
 
-  // Use a template literal to create the wrapper and water-can element
   randomCell.innerHTML = `
     <div class="water-can-wrapper">
-      <div class="water-can"></div>
+      <div class="${itemClass}"></div>
     </div>
   `;
 
-  const waterCan = randomCell.querySelector('.water-can');
+  const item = randomCell.querySelector(`.${itemClass}`);
   setTimeout(() => {
-    if (waterCan?.isConnected) {
-      shrinkWaterCan(waterCan);
+    if (item?.isConnected) {
+      shrinkWaterCan(item);
     }
   }, 1000);
 }
 
+// Handles the shrinking animation and removal of a water can or rock
 function shrinkWaterCan(waterCan) {
   if (!waterCan.isConnected || waterCan.classList.contains('shrinking')) return;
 
@@ -73,18 +75,18 @@ function startGame() {
   document.getElementById('start-game')?.remove();
   time = 60;
   document.getElementById('timer').textContent = time;
-  spawnInterval = setInterval(spawnWaterCan, 750); // Spawn water cans every second
+  spawnInterval = setInterval(spawnItem, 750); // Spawn items every 750ms
   timerInterval = setInterval(() => {
     time -= 1;
     document.getElementById('timer').textContent = time;
 
     if (time === 30) {
       clearInterval(spawnInterval);
-      spawnInterval = setInterval(spawnWaterCan, 600);
+      spawnInterval = setInterval(spawnItem, 600);
     }
     else if (time === 15) {
       clearInterval(spawnInterval);
-      spawnInterval = setInterval(spawnWaterCan, 500);
+      spawnInterval = setInterval(spawnItem, 500);
     }
 
     if (time === 0) {
@@ -121,7 +123,7 @@ function resetGame() {
   currentScore = 0;
   time = 60;
 
-  document.getElementById('current-cans').textContent = currentScore;
+  document.getElementById('current-score').textContent = currentScore;
   document.getElementById('timer').textContent = time;
   document.getElementById('achievements').textContent = '';
   document.getElementById('result-message').textContent = '';
@@ -135,17 +137,17 @@ function resetGame() {
   document.querySelector('.container').appendChild(startButton);
 }
 
-// Awards points when the active water can is clicked
+// Updates points appropriately when the active water can or rock is clicked
 document.querySelector('.game-grid').addEventListener('click', event => {
   if (!gameActive || !(event.target instanceof Element)) return;
 
-  const waterCan = event.target.closest('.water-can');
-  if (!waterCan) return;
-  if (waterCan.classList.contains('shrinking')) return;
+  const item = event.target.closest('.water-can, .rock');
+  if (!item) return;
+  if (item.classList.contains('shrinking')) return;
 
-  currentScore += 100;
-  document.getElementById('current-cans').textContent = currentScore;
-  shrinkWaterCan(waterCan);
+  currentScore += item.classList.contains('rock') ? -100 : 100;
+  document.getElementById('current-score').textContent = currentScore;
+  shrinkWaterCan(item);
 });
 
 // Set up click handler for the start button
