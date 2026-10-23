@@ -106,7 +106,7 @@ function resetGame() {
   clearInterval(timerInterval);
   gameActive = false;
   currentScore = 0;
-  time = 30;
+  time = 60;
 
   document.getElementById('current-cans').textContent = currentScore;
   document.getElementById('timer').textContent = time;
