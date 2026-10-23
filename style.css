@@ -133,12 +133,26 @@ h1 img {
   transform-origin: center; /* Ensure scaling happens from the center */
 }
 
+.water-can.shrinking {
+  pointer-events: none;
+  animation: shrink 0.3s ease-in forwards;
+}
+
 @keyframes popUp {
   0% {
     transform: scale(0.5); /* Start scaling from the center */
   }
   100% {
     transform: scale(1); /* End scaling at full size */
+  }
+}
+
+@keyframes shrink {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
   }
 }
 

@@ -1,10 +1,10 @@
 // Game configuration and state variables
-const GOAL_SCORE = 4000;        // Total items needed to collect
+const GOAL_SCORE = 10000;        // Total items needed to collect
 let currentScore = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
 let timerInterval;          // Holds the interval for counting down the game
-let time = 30;                 // Total time for the game in seconds
+let time = 60;                 // Total time for the game in seconds
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
@@ -41,9 +41,18 @@ function spawnWaterCan() {
   const waterCan = randomCell.querySelector('.water-can');
   setTimeout(() => {
     if (waterCan?.isConnected) {
-      waterCan.closest('.water-can-wrapper')?.remove();
+      shrinkWaterCan(waterCan);
     }
   }, 1000);
+}
+
+function shrinkWaterCan(waterCan) {
+  if (!waterCan.isConnected || waterCan.classList.contains('shrinking')) return;
+
+  waterCan.classList.add('shrinking');
+  waterCan.addEventListener('animationend', () => {
+    waterCan.closest('.water-can-wrapper')?.remove();
+  }, { once: true });
 }
 
 // Initializes and starts a new game
@@ -52,18 +61,18 @@ function startGame() {
   createGrid(); // Set up the game grid
   gameActive = true;
   document.getElementById('start-game')?.remove();
-  time = 30;
+  time = 60;
   document.getElementById('timer').textContent = time;
   spawnInterval = setInterval(spawnWaterCan, 750); // Spawn water cans every second
   timerInterval = setInterval(() => {
     time -= 1;
     document.getElementById('timer').textContent = time;
 
-    if (time === 20) {
+    if (time === 30) {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnWaterCan, 600);
     }
-    else if (time === 10) {
+    else if (time === 15) {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnWaterCan, 500);
     }
@@ -118,10 +127,11 @@ document.querySelector('.game-grid').addEventListener('click', event => {
 
   const waterCan = event.target.closest('.water-can');
   if (!waterCan) return;
+  if (waterCan.classList.contains('shrinking')) return;
 
   currentScore += 100;
   document.getElementById('current-cans').textContent = currentScore;
-  waterCan.closest('.water-can-wrapper')?.remove();
+  shrinkWaterCan(waterCan);
 });
 
 // Set up click handler for the start button
