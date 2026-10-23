@@ -3,6 +3,8 @@ const GOAL_SCORE = 10000;        // Total items needed to collect
 let currentScore = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
+let timerInterval;          // Holds the interval for counting down the game
+let time = 30;                 // Total time for the game in seconds
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
@@ -22,12 +24,12 @@ createGrid();
 function spawnWaterCan() {
   if (!gameActive) return; // Stop if the game is not active
   const cells = document.querySelectorAll('.grid-cell');
-  
-  // Clear all cells before spawning a new water can
-  cells.forEach(cell => (cell.innerHTML = ''));
 
-  // Select a random cell from the grid to place the water can
-  const randomCell = cells[Math.floor(Math.random() * cells.length)];
+  const emptyCells = [...cells].filter(cell => !cell.hasChildNodes());
+  if (emptyCells.length === 0) return;
+
+  // Select a random empty cell from the grid to place the water can
+  const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
 
   // Use a template literal to create the wrapper and water-can element
   randomCell.innerHTML = `
@@ -35,20 +37,88 @@ function spawnWaterCan() {
       <div class="water-can"></div>
     </div>
   `;
+
+  const waterCan = randomCell.querySelector('.water-can');
+  setTimeout(() => {
+    if (waterCan?.isConnected) {
+      waterCan.remove();
+    }
+  }, 1000);
 }
 
 // Initializes and starts a new game
 function startGame() {
   if (gameActive) return; // Prevent starting a new game if one is already active
   gameActive = true;
+  document.getElementById('start-game')?.remove();
+  time = 30;
+  document.getElementById('timer').textContent = time;
   createGrid(); // Set up the game grid
   spawnInterval = setInterval(spawnWaterCan, 1000); // Spawn water cans every second
+  timerInterval = setInterval(() => {
+    time -= 1;
+    document.getElementById('timer').textContent = time;
+
+    if (time === 14) {
+      clearInterval(spawnInterval);
+      spawnInterval = setInterval(spawnWaterCan, 500);
+    }
+
+    if (time === 0) {
+      endGame();
+    }
+  }, 1000);
 }
 
 function endGame() {
   gameActive = false; // Mark the game as inactive
   clearInterval(spawnInterval); // Stop spawning water cans
+  clearInterval(timerInterval); // Stop counting down the game
+  document.querySelectorAll('.grid-cell').forEach(cell => {
+    cell.innerHTML = '';
+  });
+
+  const resetButton = document.getElementById('reset-game');
+  if (!resetButton) {
+    const button = document.createElement('button');
+    button.id = 'reset-game';
+    button.textContent = 'Reset Game';
+    button.addEventListener('click', resetGame);
+    document.querySelector('.container').appendChild(button);
+  }
 }
+
+function resetGame() {
+  clearInterval(spawnInterval);
+  clearInterval(timerInterval);
+  gameActive = false;
+  currentScore = 0;
+  time = 30;
+
+  document.getElementById('current-cans').textContent = currentScore;
+  document.getElementById('timer').textContent = time;
+  document.getElementById('achievements').textContent = '';
+  document.getElementById('reset-game')?.remove();
+  createGrid();
+
+  const startButton = document.createElement('button');
+  startButton.id = 'start-game';
+  startButton.textContent = 'Start Game';
+  startButton.addEventListener('click', startGame);
+  document.querySelector('.container').appendChild(startButton);
+}
+
+// Awards points when the active water can is clicked
+document.querySelector('.game-grid').addEventListener('click', event => {
+  if (!gameActive || !(event.target instanceof Element)) return;
+
+  const waterCan = event.target.closest('.water-can');
+  if (!waterCan) return;
+
+  currentScore += 100;
+  document.getElementById('current-cans').textContent = currentScore;
+  waterCan.remove();
+});
 
 // Set up click handler for the start button
 document.getElementById('start-game').addEventListener('click', startGame);
