@@ -26,14 +26,14 @@ body {
   font-family: "Avenir", "Proxima Nova", Arial, sans-serif;
   margin: 0;
   padding: 30px;
-  background-color: #2E9DF7;
+  background-color: #77A8BB;
   color: #333;
 }
 
 .container {
   max-width: 750px;
   margin: 50px auto;
-  background-color: #FFC907;
+  background-color: #FFF7E1;
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -125,7 +125,7 @@ h1 img {
   display: flex;
   justify-content: space-around;
   margin-bottom: 30px;
-  background-color: #8BD1CB;
+  background-color: #FED8C1;
   padding: 15px 0;
   border-radius: 8px;
 }
@@ -146,7 +146,7 @@ h1 img {
 }
 
 .grid-cell {
-  background-color: #8BD1CB;
+  background-color: #FED8C1;
   border-radius: 8px;
   aspect-ratio: 1;
   display: flex;
@@ -234,6 +234,10 @@ button {
   display: block;
   margin: 30px auto 0;
   transition: background-color 0.2s;
+}
+
+#reset-game {
+  background-color: #F5402C;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
