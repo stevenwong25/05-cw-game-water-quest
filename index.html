@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta lang="en">
   <meta name="viewport" content="width=device-width">
   <title>Water Quest</title>
   <link rel="preload" as="image" href="img/water-can.png">
@@ -11,18 +12,21 @@
 <body>
   <div class="container">
     <div class="brand-header">
-      <img src="img/cw_logo_horizontal.png" alt="charity: water logo">
+      <img src="img/water-can-transparent.png" alt="charity: water logo">
+      <span>charity: water</span>
     </div>
-    <h1>Water Quest</h1>
-    <p class="game-instructions">Earn 5,000 points to reach the goal!</p>
-    <p class="result-message" id="result-message"></p>
-    <div class="stats">
-      <p>Score: <span id="current-score">0</span></p>
-      <p>Time Left: <span id="timer">60</span>s</p>
-    </div>
-    <div id="achievements" class="achievement"></div>
-    <div class="game-grid"></div>
-    <button id="start-game">Start Game</button>
+    <main>
+      <h1>Water Quest</h1>
+      <p class="game-instructions">Earn 5,000 points to reach the goal!</p>
+      <p class="result-message" id="result-message"></p>
+      <div class="stats">
+        <p>Score: <span id="current-score">0</span></p>
+        <p>Time Left: <span id="timer">60</span>s</p>
+      </div>
+      <div id="achievements" class="achievement"></div>
+      <div class="game-grid"></div>
+      <button id="start-game">Start Game</button>
+    </main>
   </div>
   <script src="script.js"></script>
 </body>
