@@ -23,7 +23,7 @@ Fonts:
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Avenir", "Proxima Nova", Arial, sans-serif;
   margin: 0;
   padding: 30px;
   background-color: #2E9DF7;
@@ -84,7 +84,7 @@ h1 img {
 
 .result-message {
   color: #333;
-  font-family: Arial, sans-serif;
+  font-family: "Avenir", "Proxima Nova", Arial, sans-serif;
   font-size: 20px;
   font-weight: bold;
   margin: 0 0 20px;
@@ -125,7 +125,7 @@ h1 img {
   display: flex;
   justify-content: space-around;
   margin-bottom: 30px;
-  background-color: #FF902A;
+  background-color: #8BD1CB;
   padding: 15px 0;
   border-radius: 8px;
 }
@@ -146,7 +146,7 @@ h1 img {
 }
 
 .grid-cell {
-  background-color: #FF902A;
+  background-color: #8BD1CB;
   border-radius: 8px;
   aspect-ratio: 1;
   display: flex;
