@@ -1,5 +1,5 @@
 // Game configuration and state variables
-const GOAL_SCORE = 10000;        // Total items needed to collect
+const GOAL_SCORE = 4000;        // Total items needed to collect
 let currentScore = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
@@ -24,8 +24,8 @@ createGrid();
 function spawnWaterCan() {
   if (!gameActive) return; // Stop if the game is not active
   const cells = document.querySelectorAll('.grid-cell');
+  const emptyCells = [...cells].filter(cell => !cell.querySelector('.water-can'));
 
-  const emptyCells = [...cells].filter(cell => !cell.hasChildNodes());
   if (emptyCells.length === 0) return;
 
   // Select a random empty cell from the grid to place the water can
@@ -41,7 +41,7 @@ function spawnWaterCan() {
   const waterCan = randomCell.querySelector('.water-can');
   setTimeout(() => {
     if (waterCan?.isConnected) {
-      waterCan.remove();
+      waterCan.closest('.water-can-wrapper')?.remove();
     }
   }, 1000);
 }
@@ -49,17 +49,21 @@ function spawnWaterCan() {
 // Initializes and starts a new game
 function startGame() {
   if (gameActive) return; // Prevent starting a new game if one is already active
+  createGrid(); // Set up the game grid
   gameActive = true;
   document.getElementById('start-game')?.remove();
   time = 30;
   document.getElementById('timer').textContent = time;
-  createGrid(); // Set up the game grid
-  spawnInterval = setInterval(spawnWaterCan, 1000); // Spawn water cans every second
+  spawnInterval = setInterval(spawnWaterCan, 750); // Spawn water cans every second
   timerInterval = setInterval(() => {
     time -= 1;
     document.getElementById('timer').textContent = time;
 
-    if (time === 14) {
+    if (time === 20) {
+      clearInterval(spawnInterval);
+      spawnInterval = setInterval(spawnWaterCan, 600);
+    }
+    else if (time === 10) {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnWaterCan, 500);
     }
@@ -117,7 +121,7 @@ document.querySelector('.game-grid').addEventListener('click', event => {
 
   currentScore += 100;
   document.getElementById('current-cans').textContent = currentScore;
-  waterCan.remove();
+  waterCan.closest('.water-can-wrapper')?.remove();
 });
 
 // Set up click handler for the start button
