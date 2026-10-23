@@ -15,6 +15,7 @@ let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
 let timerInterval;          // Holds the interval for counting down the game
 let time = 60;                 // Total time for the game in seconds
+let confettiPlayed = false;
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
@@ -40,7 +41,7 @@ function spawnItem() {
 
   // Select a random empty cell from the grid to place the item
   const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-  const rockChance = time < 20 ? 0.4 : time < 50 ? 0.2 : 0;
+  const rockChance = time < 20 ? 0.35 : time < 55 ? 0.2 : 0;
   const itemClass = Math.random() < rockChance ? 'rock' : 'water-can';
 
   randomCell.innerHTML = `
@@ -102,6 +103,10 @@ function endGame() {
   const messages = currentScore >= GOAL_SCORE ? winningMessages : losingMessages;
   const resultMessage = messages[Math.floor(Math.random() * messages.length)];
   document.getElementById('result-message').textContent = resultMessage;
+  if (currentScore >= GOAL_SCORE && !confettiPlayed) {
+    confettiPlayed = true;
+    playConfetti();
+  }
   document.querySelectorAll('.grid-cell').forEach(cell => {
     cell.innerHTML = '';
   });
@@ -122,11 +127,13 @@ function resetGame() {
   gameActive = false;
   currentScore = 0;
   time = 60;
+  confettiPlayed = false;
 
   document.getElementById('current-score').textContent = currentScore;
   document.getElementById('timer').textContent = time;
   document.getElementById('achievements').textContent = '';
   document.getElementById('result-message').textContent = '';
+  document.getElementById('confetti-container')?.remove();
   document.getElementById('reset-game')?.remove();
   createGrid();
 
@@ -137,6 +144,27 @@ function resetGame() {
   document.querySelector('.container').appendChild(startButton);
 }
 
+function playConfetti() {
+  const confettiContainer = document.createElement('div');
+  confettiContainer.id = 'confetti-container';
+  confettiContainer.setAttribute('aria-hidden', 'true');
+
+  const colors = ['#ffc907', '#2e9df7', '#4fcb53', '#ff902a'];
+  for (let i = 0; i < 40; i += 1) {
+    const piece = document.createElement('span');
+    piece.className = 'confetti-piece';
+    piece.style.backgroundColor = colors[i % colors.length];
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.animationDelay = `${Math.random() * 0.4}s`;
+    piece.style.setProperty('--confetti-x', `${(Math.random() - 0.5) * 180}px`);
+    piece.style.setProperty('--confetti-rotation', `${Math.random() * 720 - 360}deg`);
+    confettiContainer.appendChild(piece);
+  }
+
+  document.querySelector('.container').appendChild(confettiContainer);
+  setTimeout(() => confettiContainer.remove(), 3000);
+}
+
 // Updates points appropriately when the active water can or rock is clicked
 document.querySelector('.game-grid').addEventListener('click', event => {
   if (!gameActive || !(event.target instanceof Element)) return;
@@ -145,7 +173,7 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   if (!item) return;
   if (item.classList.contains('shrinking')) return;
 
-  currentScore += item.classList.contains('rock') ? -100 : 100;
+  currentScore += item.classList.contains('rock') ? -200 : 100;
   document.getElementById('current-score').textContent = currentScore;
   shrinkWaterCan(item);
 });
