@@ -39,6 +39,20 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.brand-header img {
+  width: min(220px, 55vw);
+  height: auto;
+  display: block;
+}
+
 h1 {
   text-align: center;
   font-size: 30px;
