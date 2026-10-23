@@ -73,6 +73,15 @@ h1 img {
   text-align: center;
 }
 
+.result-message {
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
 .stats {
   display: flex;
   justify-content: space-around;

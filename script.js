@@ -1,5 +1,15 @@
 // Game configuration and state variables
 const GOAL_SCORE = 10000;        // Total items needed to collect
+const winningMessages = [
+  'Amazing work! You reached the goal.',
+  'You won! Congratulations!',
+  'Great job! You did it!'
+];
+const losingMessages = [
+  'Keep going! Try again to reach the goal.',
+  'Almost there! Play again and collect more water cans.',
+  'Good effort! You can make it next time.'
+];
 let currentScore = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
@@ -87,6 +97,9 @@ function endGame() {
   gameActive = false; // Mark the game as inactive
   clearInterval(spawnInterval); // Stop spawning water cans
   clearInterval(timerInterval); // Stop counting down the game
+  const messages = currentScore >= GOAL_SCORE ? winningMessages : losingMessages;
+  const resultMessage = messages[Math.floor(Math.random() * messages.length)];
+  document.getElementById('result-message').textContent = resultMessage;
   document.querySelectorAll('.grid-cell').forEach(cell => {
     cell.innerHTML = '';
   });
@@ -111,6 +124,7 @@ function resetGame() {
   document.getElementById('current-cans').textContent = currentScore;
   document.getElementById('timer').textContent = time;
   document.getElementById('achievements').textContent = '';
+  document.getElementById('result-message').textContent = '';
   document.getElementById('reset-game')?.remove();
   createGrid();
 
